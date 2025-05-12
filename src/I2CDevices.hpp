@@ -53,6 +53,10 @@ public:
      */
     virtual ~I2CDevices();
 
+    // Dans I2CDevices.hpp
+    i2c_master_bus_handle_t get_bus_handle() const { return i2c_bus_handle; }
+
+
     /**
      * @brief Écrit une séquence d’octets à un registre du périphérique I2C.
      *
