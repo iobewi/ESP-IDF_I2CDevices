@@ -26,18 +26,18 @@ I2CDevices::I2CDevices(i2c_port_t port, gpio_num_t sda, gpio_num_t scl, uint16_t
 
     err = i2c_new_master_bus(&i2c_bus_config, &i2c_bus_handle);
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C bus initialization failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C bus initialization failed: %s", esp_err_to_name(err));
         return ;
     }
     err = i2c_master_bus_add_device(i2c_bus_handle, &i2c_dev_cfg, &i2c_dev_handle);
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C add device failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C add device failed: %s", esp_err_to_name(err));
         return ;
     }
     
     err = CreateMutex(Lock);
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C mutex creation failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C mutex creation failed: %s", esp_err_to_name(err));
         return ;
     }
 }
@@ -55,13 +55,13 @@ I2CDevices::I2CDevices(i2c_master_bus_handle_t bus, uint16_t addr, uint32_t freq
 
     err = i2c_master_bus_add_device(i2c_bus_handle, &i2c_dev_cfg, &i2c_dev_handle);
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C add device failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C add device failed: %s", esp_err_to_name(err));
         return ;
     }
 
     err = CreateMutex(Lock);
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C mutex creation failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C mutex creation failed: %s", esp_err_to_name(err));
         return ;
     }
 }
@@ -75,7 +75,7 @@ I2CDevices::~I2CDevices() {
 esp_err_t I2CDevices::write(uint8_t reg, const uint8_t* data, size_t len) {
 
     if (xSemaphoreTake(Lock, portMAX_DELAY) != pdTRUE) {
-        ESP_LOGE("I2CDevices", "I2C write: mutex lock failed");
+        ESP_LOGE(TAG, "I2C write: mutex lock failed");
         return ESP_ERR_NO_MEM;     
     }
 
@@ -87,7 +87,7 @@ esp_err_t I2CDevices::write(uint8_t reg, const uint8_t* data, size_t len) {
     xSemaphoreGive(Lock);
 
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C write failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C write failed: %s", esp_err_to_name(err));
         return err;
     }
     return ESP_OK;
@@ -96,7 +96,7 @@ esp_err_t I2CDevices::write(uint8_t reg, const uint8_t* data, size_t len) {
 esp_err_t I2CDevices::read(uint8_t reg, uint8_t* data, size_t len) {
 
     if (xSemaphoreTake(Lock, portMAX_DELAY) != pdTRUE) {
-        ESP_LOGE("I2CDevices", "I2C read: mutex lock failed");
+        ESP_LOGE(TAG, "I2C read: mutex lock failed");
         return ESP_ERR_NO_MEM;     
     }
     
@@ -104,7 +104,7 @@ esp_err_t I2CDevices::read(uint8_t reg, uint8_t* data, size_t len) {
     xSemaphoreGive(Lock);
 
     if (err != ESP_OK) {
-        ESP_LOGE("I2CDevices", "I2C read failed: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "I2C read failed: %s", esp_err_to_name(err));
         return err;
     }
     return ESP_OK;

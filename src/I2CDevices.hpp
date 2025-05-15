@@ -13,7 +13,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 
-
 #define CONFIG_I2C_MASTER_FREQUENCY 100000
 
 /**
@@ -56,7 +55,6 @@ public:
     // Dans I2CDevices.hpp
     i2c_master_bus_handle_t get_bus_handle() const { return i2c_bus_handle; }
 
-
     /**
      * @brief Écrit une séquence d’octets à un registre du périphérique I2C.
      *
@@ -95,4 +93,7 @@ protected:
     i2c_master_dev_handle_t i2c_dev_handle; ///< Handle du périphérique I2C.
 
     bool owns_bus = false; ///< Indique si le bus a été créé par cette instance.
+
+private:
+    inline static const char *TAG = "I2CDevices";
 };
